@@ -688,7 +688,7 @@ for ImgSeqNum = 2 : length(ImgNormalized)
     % ------ Save figures for computed stress fields ------
     fprintf('--- Enter the name of the folder where the results will be saved (Disp and Strain) ---  \n')
     namepath = input('Input here: ', 's');
-    folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/', namepath); % caminho da pasta onde você deseja salvar as imagens
+    folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/Resultados', namepath); % caminho da pasta onde você deseja salvar as imagens
 
     if ~exist(folderPath, 'dir')
         mkdir(folderPath);
@@ -823,7 +823,7 @@ elseif (DICpara.StressOrPoisson == 1) % Poisson's ratio calculation (included by
          
         fprintf('--- Enter the name of the folder where the results will be saved (Poisson) ---  \n')
         namepath = input('Input here: ', 's');
-        folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/', namepath); % caminho da pasta onde você deseja salvar as imagens
+        folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/Resultados', namepath); % caminho da pasta onde você deseja salvar as imagens
 
         if ~exist(folderPath, 'dir')
          mkdir(folderPath);
