@@ -55,11 +55,13 @@ switch LoadImgMethod
    otherwise
      % ==============================================
        disp('--- Please load first image ---')
-       file_name{1,1} = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'}, 'Select reference Image (Deformed)');
-     
+       [file_name{1, 1}, path_name] = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'}, 'Select reference Image (Deformed)');
+       file_name{1, 1} = fullfile(path_name, file_name{1, 1});
+
        disp('--- Please load next image ---')
-       file_name{1,2} = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'},'Select deformed Image (Reference)');
-    
+       [file_name{1,2}, path_name] = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'},'Select deformed Image (Reference)');
+       file_name{1, 2} = fullfile(path_name, file_name{1, 2});
+
        prompt = 'Do you want to load more deformed images? (0-Yes; 1-No): ';
        DoYouWantToLoadMoreImages = input(prompt); 
        imageNo = 2;
