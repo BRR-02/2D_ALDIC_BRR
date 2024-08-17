@@ -683,9 +683,17 @@ for ImgSeqNum = 2 : length(ImgNormalized)
         'strain_maxshear',strain_maxshear,'strain_vonMises',strain_vonMises);
     
     % ------ Save figures for tracked displacement and strain fields ------
-    SaveFigFilesDispAndStrain;
+    %SaveFigFilesDispAndStrain;
     
-    
+    % ------ Save figures for computed stress fields ------
+    fprintf('--- Enter the name of the folder where the results will be saved (Disp and Strain) ---  \n')
+    namepath = input('Input here: ', 's');
+    folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/', namepath); % caminho da pasta onde você deseja salvar as imagens
+
+    if ~exist(folderPath, 'dir')
+        mkdir(folderPath);
+    end
+    SaveFigFiles;
 end
 % ------ END of for-loop {ImgSeqNum = 2:length(ImgNormalized)} ------
 fprintf('------------ Section 8 Done ------------ \n \n')
@@ -812,13 +820,23 @@ elseif (DICpara.StressOrPoisson == 1) % Poisson's ratio calculation (included by
         fprintf('Poisson''s ratio: %.4f \n', poisson_meane);
         fprintf('Error (95%% CI): %.5f \n', 2*stdpoisson_meane);
 
-         % ------ Save figures for computed stress fields ------
-         SaveFigFilesPoisson;
+         
+        fprintf('--- Enter the name of the folder where the results will be saved (Poisson) ---  \n')
+        namepath = input('Input here: ', 's');
+        folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/', namepath); % caminho da pasta onde você deseja salvar as imagens
 
-         % ----- Save Poisson results ------
-         ResultPoissonWorld{ImgSeqNum-1} = struct('PoissonxCoord',ResultStrainWorld{ImgSeqNum-1}.strainxCoord,'PoissonyCoord',ResultStrainWorld{ImgSeqNum-1}.strainyCoord, ...
+        if ~exist(folderPath, 'dir')
+         mkdir(folderPath);
+        end
+        
+        SaveFigFilesPoisson;
+
+        % ----- Save Poisson results ------
+        ResultPoissonWorld{ImgSeqNum-1} = struct('PoissonxCoord',ResultStrainWorld{ImgSeqNum-1}.strainxCoord,'PoissonyCoord',ResultStrainWorld{ImgSeqNum-1}.strainyCoord, ...
             'Poisson',poisson);
      end
+
+     
      % ------ END of for-loop {ImgSeqNum = 2:length(ImgNormalized)} -----
 
      % ------ Save data again including Poisson fields ------
@@ -827,7 +845,6 @@ elseif (DICpara.StressOrPoisson == 1) % Poisson's ratio calculation (included by
         'ALSub1Time','ALSub2Time','ALSolveStep','ResultStrainWorld','ResultPoissonWorld');
 
 end
-
 fprintf('------------ Section 9 Done ------------ \n \n')
 
 

@@ -32,15 +32,16 @@ switch LoadImgMethod
     case 0
         % ==============================================
         imgfoldername = uigetdir(pwd,'Select images folder');
-        addpath([imgfoldername,'\']);
-        img1 = dir(fullfile(imgfoldername,'*.jpg'));
+        addpath([imgfoldername,'/']);
+        img0 = dir(fullfile(imgfoldername,'*.jpg'));
+        img1 = dir(fullfile(imgfoldername,'*.JPG'));
         img2 = dir(fullfile(imgfoldername,'*.jpeg'));
         img3 = dir(fullfile(imgfoldername,'*.tif'));
         img4 = dir(fullfile(imgfoldername,'*.tiff'));
         img5 = dir(fullfile(imgfoldername,'*.bmp'));
         img6 = dir(fullfile(imgfoldername,'*.png'));
         img7 = dir(fullfile(imgfoldername,'*.jp2'));
-        file_name = [img1;img2;img3;img4;img5;img6;img7];
+        file_name = [img0;img1;img2;img3;img4;img5;img6;img7];
         file_name = struct2cell(file_name);
     case 1
         % ==============================================
@@ -50,21 +51,46 @@ switch LoadImgMethod
         [~,imgname,imgext] = fileparts(file_name);
         file_name = dir([imgname,imgext]);
         file_name = struct2cell(file_name);
-    otherwise
-        % ==============================================
-        disp('--- Please load first image ---')
-        file_name{1,1} = uigetfile('*.tif','Select reference Image (Deformed)');
-        disp('--- Please load next image ---')
-        file_name{1,2} = uigetfile('*.tif','Select deformed Image (Reference)');
-        prompt = 'Do you want to load more deformed images? (0-Yes; 1-No)';
-        DoYouWantToLoadMoreImages = input(prompt); imageNo = 2;
-        while ( DoYouWantToLoadMoreImages == 0 )   
-            imageNo = imageNo + 1;
-            file_name{1,imageNo} = uigetfile('*.tif','Select Deformed Image');
-            prompt = 'Do you want to load more deformed images? (0-Yes; 1-No)';
-            DoYouWantToLoadMoreImages = input(prompt);
-        end
+
+   otherwise
+     % ==============================================
+       disp('--- Please load first image ---')
+       file_name{1,1} = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'}, 'Select reference Image (Deformed)');
+     
+       disp('--- Please load next image ---')
+       file_name{1,2} = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'},'Select deformed Image (Reference)');
+    
+       prompt = 'Do you want to load more deformed images? (0-Yes; 1-No): ';
+       DoYouWantToLoadMoreImages = input(prompt); 
+       imageNo = 2;
+
+       while ( DoYouWantToLoadMoreImages == 0 )   
+           [file_name{1,imageNo}] = uigetfile({'*.tif;*.tiff;*.jpg;*.jpeg;*.png;*.bmp;*.jp2', 'All Image Files'},'Select Deformed Image');
+        
+           prompt = 'Do you want to load more deformed images? (0-Yes; 1-No): ';
+           DoYouWantToLoadMoreImages = input(prompt);
+           imageNo = imageNo + 1;
+       end
 end
+
+% ==============================================
+% O código para carregar e processar as imagens
+numImages = size(file_name,2);
+for i = 1:numImages
+    if ~exist(file_name{1,i}, 'file')
+        error('O arquivo "%s" não existe.', file_name{1,i});
+    end
+    Img{i} = imread(file_name{1,i});
+    % Change color RGB images to grayscale images
+    [~, ~, numberOfColorChannels] = size(Img{i});
+    if (numberOfColorChannels==3)
+        Img{i} = rgb2gray(Img{i});
+    end
+    Img{i} = double(Img{i})';
+end
+
+
+
 
 % ==============================================
 % The following codes only consider two images comparasion
