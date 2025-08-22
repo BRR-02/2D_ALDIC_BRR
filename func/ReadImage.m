@@ -1,4 +1,4 @@
-function [file_name,Img,DICpara] = ReadImage(varargin)
+function [file_name,Img,DICpara, LoadImgMethod] = ReadImage(varargin)
 %FUNCTION [file_name,Img,DICpara] = ReadImage(varargin)
 % MATLAB script: ReadImage.m
 % ----------------------------------------------

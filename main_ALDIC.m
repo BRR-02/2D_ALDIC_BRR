@@ -24,7 +24,8 @@ fprintf('------------ Section 1 Done ------------ \n \n')
 %% Section 2: Load DIC parameters and set up DIC parameters
 fprintf('------------ Section 2 Start ------------ \n')
 % ====== Read images ======
-[file_name,Img,DICpara] = ReadImage; % Load DIC raw images
+
+[file_name,Img,DICpara, LoadImgMethod] = ReadImage; % Load DIC raw images
 % %%%%%% Uncomment the line below to change the DIC computing region (ROI) manually %%%%%%
 % DICpara.gridxROIRange = [gridxROIRange1,gridxROIRange2]; DICpara.gridyROIRange = [Val1, Val2];
 % E.g., gridxROIRange = [224,918]; gridyROIRange = [787,1162];
@@ -686,13 +687,18 @@ for ImgSeqNum = 2 : length(ImgNormalized)
     %SaveFigFilesDispAndStrain;
     
     % ------ Save figures for computed stress fields ------
-    fprintf('--- Enter the name of the folder where the results will be saved (Disp and Strain) ---  \n')
-    namepath = input('Input here: ', 's');
-    folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/Resultados', namepath); % caminho da pasta onde você deseja salvar as imagens
+    if (LoadImgMethod == 0 && ImgSeqNum == 2) || (LoadImgMethod ~= 0)
+        fprintf('--- Enter the name of the folder where the results will be saved (Disp and Strain) ---  \n')
+        namepath = input('Input here: ', 's');
 
+        baseFolder = fullfile(myfilepath, 'Resultados');
+        folderPath = fullfile(baseFolder, namepath); % caminho da pasta onde você deseja salvar as imagens
+    end
+    
     if ~exist(folderPath, 'dir')
         mkdir(folderPath);
     end
+
     SaveFigFiles;
 end
 % ------ END of for-loop {ImgSeqNum = 2:length(ImgNormalized)} ------
@@ -820,10 +826,17 @@ elseif (DICpara.StressOrPoisson == 1) % Poisson's ratio calculation (included by
         fprintf('Poisson''s ratio: %.4f \n', poisson_meane);
         fprintf('Error (95%% CI): %.5f \n', 2*stdpoisson_meane);
 
-         
-        fprintf('--- Enter the name of the folder where the results will be saved (Poisson) ---  \n')
-        namepath = input('Input here: ', 's');
-        folderPath = strcat('/scratch/reis2/2D_ALDIC_BRR/Resultados', namepath); % caminho da pasta onde você deseja salvar as imagens
+        scriptPath = mfilename('fullpath');
+        myfilepath = fileparts(scriptPath);
+        
+        % Pasta padrão "Resultados"
+        if (LoadImgMethod == 0 && ImgSeqNum == 2) || (LoadImgMethod ~= 0)
+            fprintf('--- Enter the name of the folder where the results will be saved (Poisson) ---  \n')
+            namepath = input('Input here: ', 's');
+    
+            baseFolder = fullfile(myfilepath, 'Resultados');
+            folderPath = fullfile(baseFolder, namepath); % caminho da pasta onde você deseja salvar as imagens
+        end
 
         if ~exist(folderPath, 'dir')
          mkdir(folderPath);
